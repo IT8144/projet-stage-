@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pdfplumber
+sentence-transformers
+numpy
+python-multipart 
+langdetect
+googletrans==4.0.0rc1 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatbot Entreprise</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #ccc; padding: 24px; }
+        h1 { text-align: center; color: #2c3e50; }
+        #chat { min-height: 200px; margin-bottom: 20px; }
+        .msg { margin: 10px 0; }
+        .user { color: #2980b9; }
+        .bot { color: #27ae60; }
+        #question { width: 80%; padding: 8px; }
+        #send { padding: 8px 16px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chatbot Entreprise</h1>
+    <div id="chat"></div>
+    <form id="chat-form">
+        <input type="text" id="question" placeholder="Posez votre question..." required autocomplete="off" />
+        <button type="submit" id="send">Envoyer</button>
+    </form>
+</div>
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('chat-form');
+const questionInput = document.getElementById('question');
+
+form.onsubmit = async (e) => {
+    e.preventDefault();
+    const question = questionInput.value.trim();
+    if (!question) return;
+    chat.innerHTML += `<div class='msg user'><b>Vous:</b> ${question}</div>`;
+    questionInput.value = '';
+    chat.innerHTML += `<div class='msg bot'><b>Bot:</b> <span id='waiting'>...</span></div>`;
+    chat.scrollTop = chat.scrollHeight;
+    // Appel API
+    const formData = new FormData();
+    formData.append('question', question);
+    try {
+        const res = await fetch('/chat', { method: 'POST', body: formData });
+        const data = await res.json();
+        document.getElementById('waiting').parentNode.innerHTML = `<b>Bot:</b> ${data.answer}`;
+    } catch (err) {
+        document.getElementById('waiting').parentNode.innerHTML = `<b>Bot:</b> Erreur serveur.`;
+    }
+    chat.scrollTop = chat.scrollHeight;
+};
+</script>
+</body>
+</html> 
